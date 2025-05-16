@@ -1,0 +1,121 @@
+
+🚀 ESCOPÃO DO MVP  -  Loja da Mãe do Pedro
+
+1. 🧭 Autenticação e Papéis
+Funcionalidades:
+   oo    Login local (usuário/senha)
+   oo    Criação de novos usuários pelo Admin
+   oo    Geração automática de usuário/senha para cliente que fecha pedido
+Papéis com permissão segmentada:
+   oo    Admin (sua mãe)
+   oo    Vendedor
+   oo    Comprador
+   oo    Financeiro
+   oo    Cliente final (apenas leitura do status do pedido)
+Entidades:
+   oo    User { id, name, email, role, passwordHash }
+   oo    Session (NextAuth v5 com Prisma)
+Notas técnicas:
+   oo    middleware.ts com withAuth
+   oo    Custom hook useHasPermission(role[])
+
+2. 💼 CRM e Pré-Orçamento (Vendedor)
+Funcionalidades:
+   oo    Criação de leads
+   oo    Gestão de clientes comuns e cliente master com subclientes
+   oo    Calendário de visitas (com bloqueio de horários)
+   oo    Pré-orçamento com cards de itens (sem cálculo ainda)
+Entidades:
+   oo    Cliente
+   oo    ClienteMaster --> Cliente[]
+   oo    Lead, Visita
+   oo    CalendarioVendedor
+Notas técnicas:
+   oo    Integração opcional com Google Calendar (futuro)
+   oo    Cada produto do pré-orçamento segue estrutura de input de dados com base no tipo (tipoProduto: "cortina" | "persiana" | ...)
+
+3. 🧮 Orçamento com IA e Aprovação
+Funcionalidades:
+   oo    Envio dos dados ao backend --> cálculo via toolkit (Python ou TS)
+   oo    Geração de cards de produto com preços, imagens e IA (prompt copy-paste)
+   oo    Geração de PDF simples ou de apresentação
+   oo    QR code Pix com desconto + link para contraproposta
+   oo    Validação de regras de negócio antes de permitir fechamento
+Entidades:
+   oo    Orcamento
+   oo    ItemOrcamento
+   oo    RegraNegocio
+   oo    Contraproposta
+Notas técnicas:
+   oo    Renderizador de PDF (react-pdf)
+   oo    Geração de QR Code (qrcode.react)
+   oo    Validação com Zod
+   oo    Descontos manuais --> se ultrapassam regras --> alerta para admin aprovar
+
+4. 🏗 Compras, Produção e Estoque
+Funcionalidades:
+   oo    Checagem automática de estoque
+   oo    Orçamento automático com fornecedores padrão
+   oo    Impressão de ordem de produção (PDF)
+   oo    Integração leve com estoque (entrada manual via checagem de nota)
+   oo    Checklist final de instalação
+Entidades:
+   oo    Fornecedor, Estoque, PedidoCompra, ItemCompra
+   oo    OrdemProducao
+   oo    ChecklistInstalacao
+Notas técnicas:
+   oo    Integração com XML de nota fiscal para abastecer estoque
+   oo    Painel do comprador para avançar etapas da produção
+
+5. 💰 Financeiro e SEFAZ
+Funcionalidades:
+   oo    Contas a pagar (via leitura de XML)
+   oo    Contas a receber (após fechamento do orçamento)
+   oo    Geração de boleto (manual no início)
+   oo    Lembretes por e-mail
+   oo    Gráficos e listas de cobranças, vencimentos e inadimplentes
+Entidades:
+   oo    ContaPagar, ContaReceber
+   oo    NotaFiscalEmitida, NotaFiscalRecebida
+Notas técnicas:
+   oo    Script SEFAZ rodando 4x ao dia
+   oo    Push notification futura para lembretes internos
+
+6. 📊 Dashboards e Relatórios
+Funcionalidades:
+   oo    Dashboard por perfil:
+         oo          Vendedor: leads, propostas, comissões, metas
+         oo          Admin: BI com gráficos combinados
+   oo    Relatórios mensais em CSV e PDF
+   oo    Exportação por data, vendedor ou cliente
+Entidades:
+   oo    Comissao, Meta, DashboardData, Relatorio
+Notas técnicas:
+   oo    Charts com recharts
+   oo    Exportações com papaparse (CSV) e react-pdf
+
+7. 🧱 Infraestrutura e Deploy
+Funcionalidades:
+   oo    WebApp com estrutura PWA
+   oo    Sync entre dispositivos (IndexedDB + sincronização)
+   oo    Instalação local ou via subdomínio lojadamae.com
+Notas técnicas:
+   oo    Deploy na Vercel + opção de exportação como PWA (next-pwa)
+   oo    IndexedDB via idb-keyval
+   oo    Persistência offline + sync no login (token válido --> atualiza)
+📋 Entregas por Fase (sugestão)
+                                     Fase
+                                   Objetivo
+1
+Auth + CRM + Calendário + Pré-Orçamento
+2
+Orçamento + IA + PDF + Regra de Negócio
+3
+Compras + Produção + Estoque + Checklist
+4
+Financeiro + SEFAZ XML + Cobrança/Recibo
+5
+Dashboards + Relatórios + Exportação
+6
+Deploy + Instalação PWA + Testes finais
+

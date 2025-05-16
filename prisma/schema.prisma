@@ -1,0 +1,523 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  VENDEDOR
+  COMPRADOR
+  FINANCEIRO
+  CLIENTE
+  INSTALADOR
+  MARKETER // Added MARKETER role
+}
+
+enum Sexo {
+  MASCULINO
+  FEMININO
+  OUTRO
+  NAO_INFORMAR
+}
+
+enum LeadStatus {
+  SEM_DONO
+  PRIMEIRO_CONTATO
+  VISITA_AGENDADA
+  PRE_ORCAMENTO
+  ORCAMENTO_ENVIADO
+  CONTRA_PROPOSTA
+  SEM_RESPOSTA
+  FECHADO
+  PERDIDO
+}
+
+enum TipoCliente {
+  NORMAL
+  MASTER
+}
+
+enum OrcamentoStatus {
+  EM_ANDAMENTO
+  AGUARDANDO_APROVACAO
+  FECHADO
+  CANCELADO
+}
+
+// Added EtapaPosVenda enum
+enum EtapaPosVenda {
+  NAO_INICIADO
+  EM_PRODUCAO_COMPRAS
+  AGUARDANDO_INSTALACAO
+  INSTALACAO_AGENDADA
+  INSTALACAO_CONCLUIDA
+  ACOMPANHAMENTO_POS_VENDA
+}
+
+enum StatusChecklist {
+  PENDENTE
+  EM_ANDAMENTO
+  CONCLUIDO
+  CONCLUIDO_COM_RESSALVAS
+  CANCELADO
+}
+
+model User {
+  id         String   @id @default(cuid())
+  name       String
+  email      String   @unique
+  password   String
+  role       Role
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  avatarUrl   String?
+  tituloLoja  String?
+
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  leads       Lead[]      @relation("UserLeads")
+  visitas     Visita[]    @relation("VisitasDoVendedor")
+  orcamentos  Orcamento[] @relation("VendedorOrcamentos")
+  followUps   FollowUp[]  @relation("UserFollowUps")
+  cliente     Cliente?    
+  checklistsInstalador ChecklistInstalacao[] @relation("InstaladorChecklist")
+  ordensProducaoResponsavel OrdemProducao[] // Added inverse relation for OrdemProducao.responsavel
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? // Removed @db.Text
+  access_token      String? // Removed @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? // Removed @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+
+model Lead {
+  id         String     @id @default(cuid())
+  nome       String
+  telefone   String
+  email      String?
+  status     LeadStatus @default(SEM_DONO)
+  vendedorId String?
+  vendedor   User?      @relation("UserLeads", fields: [vendedorId], references: [id])
+  cliente    Cliente?   @relation(fields: [clienteId], references: [id])
+  clienteId  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Cliente {
+  id          String    @id @default(cuid())
+  nome        String
+  nomeSocial  String?
+  telefone    String
+  email       String?
+  cpf         String?   @unique
+  aniversario DateTime?
+  fotoUrl     String?
+  sexo        Sexo?
+
+  cep         String?
+  estado      String?
+  cidade      String?
+  bairro      String?
+  rua         String?
+  numero      String?
+  complemento String?
+
+  tipo         TipoCliente @default(NORMAL)
+  clientePai   Cliente?    @relation("ClienteMaster", fields: [clientePaiId], references: [id])
+  clientePaiId String?
+  filhos       Cliente[]   @relation("ClienteMaster")
+
+  origemLead  String?
+  interesseEm Json? // Changed from String[] to Json?
+  observacoes String?
+  userId      String?   @unique 
+  user        User?     @relation(fields: [userId], references: [id])
+
+  visitas    Visita[]     @relation("VisitasDoCliente")
+  orcamentos Orcamento[]
+  leads      Lead[]
+  followUps  FollowUp[]
+  contas     Conta[]      @relation("ContasDoCliente")
+}
+
+model FollowUp {
+  id        String   @id @default(cuid())
+  clienteId String
+  userId    String
+  mensagem  String
+  criadoEm  DateTime @default(now())
+
+  cliente Cliente @relation(fields: [clienteId], references: [id])
+  autor   User    @relation("UserFollowUps", fields: [userId], references: [id])
+}
+
+
+model Visita {
+  id          String          @id @default(cuid())
+  clienteId   String
+  vendedorId  String
+  dataHora    DateTime
+  tipoVisita  String?
+  
+  ambientes   Ambiente[]      
+  fotosGerais FotoVisita[]    
+
+  vendedor  User     @relation("VisitasDoVendedor", fields: [vendedorId], references: [id])
+  cliente   Cliente  @relation("VisitasDoCliente",  fields: [clienteId],  references: [id])
+  orcamento   Orcamento? @relation(fields: [orcamentoId], references: [id])
+  orcamentoId String? @unique
+}
+
+model FotoVisita {
+  id        String   @id @default(cuid())
+  visita    Visita   @relation(fields: [visitaId], references: [id])
+  visitaId  String
+  url       String
+  legenda   String?
+  createdAt DateTime @default(now())
+}
+
+model Ambiente {
+  id          String           @id @default(cuid())
+  visita      Visita           @relation(fields: [visitaId], references: [id])
+  visitaId    String
+  nome        String
+  observacoes String?
+  
+  produtos    ProdutoOrcado[]
+
+  createdAt   DateTime         @default(now())
+}
+
+model ProdutoOrcado {
+  id           String   @id @default(cuid())
+  ambiente     Ambiente @relation(fields: [ambienteId], references: [id])
+  ambienteId   String
+
+  tipoProduto  String
+  dados        Json      
+  imagemUrl    String?   
+
+  createdAt    DateTime  @default(now())
+}
+
+model Orcamento {
+  id          String          @id @default(cuid())
+  clienteId   String
+  vendedorId  String?
+  visitaId    String?         @unique
+  visita      Visita?         
+  status      OrcamentoStatus @default(EM_ANDAMENTO)
+  etapaPosVenda EtapaPosVenda? @default(NAO_INICIADO) // Added etapaPosVenda field
+  observacoes String?
+  valorTotal  Float?          
+  desconto    Float?          
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  cliente  Cliente         @relation(fields: [clienteId], references: [id])
+  vendedor User?           @relation("VendedorOrcamentos", fields: [vendedorId], references: [id])
+  itens    ItemOrcamento[]
+  contas   Conta[]         @relation("ContasDoOrcamento")
+  ordemProducao OrdemProducao? 
+  checklistInstalacao ChecklistInstalacao? @relation("ChecklistDoOrcamento") // Added relation name
+}
+
+model ItemOrcamento {
+  id            String @id @default(cuid())
+  orcamentoId   String
+  tipoProduto   String
+  descricao     String
+  largura       Float?
+  altura        Float?
+  metragem      Float?
+  precoUnitario Float?
+  precoFinal    Float?
+
+  orcamento Orcamento @relation(fields: [orcamentoId], references: [id], onDelete: Cascade)
+}
+
+enum StatusPedidoCompra {
+  PENDENTE
+  ENVIADO
+  PARCIALMENTE_RECEBIDO
+  RECEBIDO
+  CANCELADO
+}
+
+model Fornecedor {
+  id          String   @id @default(cuid())
+  nome        String   @unique
+  cnpj        String?  @unique
+  telefone    String?
+  email       String?  @unique
+  endereco    String?
+  observacoes String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  pedidosCompra PedidoCompra[]
+  produtos      ProdutoEstoque[] @relation("ProdutosDoFornecedor")
+  contas        Conta[]          @relation("ContasDoFornecedor")
+  nfeComprasImportadas NfeCompraImportada[] // Added inverse relation
+}
+
+model PedidoCompra {
+  id            String             @id @default(cuid())
+  fornecedorId  String
+  fornecedor    Fornecedor         @relation(fields: [fornecedorId], references: [id])
+  dataPedido    DateTime           @default(now())
+  dataPrevista  DateTime?
+  status        StatusPedidoCompra @default(PENDENTE)
+  observacoes   String?
+  totalEstimado Float?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  itens PedidoCompraItem[]
+  contas Conta[]           @relation("ContasDoPedidoCompra")
+}
+
+model PedidoCompraItem {
+  id             String       @id @default(cuid())
+  pedidoCompraId String
+  pedidoCompra   PedidoCompra @relation(fields: [pedidoCompraId], references: [id], onDelete: Cascade)
+  produtoEstoqueId String?      
+  produtoEstoque   ProdutoEstoque? @relation(fields: [produtoEstoqueId], references: [id])
+  descricao      String       
+  unidade        String       
+  quantidade     Float
+  precoUnitario  Float?
+  precoTotal     Float?
+  observacoes    String?
+  createdAt      DateTime     @default(now())
+}
+
+model ProdutoEstoque {
+  id             String    @id @default(cuid()) 
+  nome           String    @unique
+  descricao      String?
+  unidadeMedida  String    
+  quantidade     Float     @default(0)
+  precoCusto     Float?    
+  fornecedorPrefId String?
+  fornecedorPref Fornecedor? @relation("ProdutosDoFornecedor", fields: [fornecedorPrefId], references: [id])
+  localizacao    String?   
+  minNivel       Float?    
+  maxNivel       Float?    
+  tempoEntregaDias Int?      // Added tempoEntregaDias field
+  observacoes    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  itensPedidoCompra PedidoCompraItem[]
+  itensNfeCompraImportada ItemNfeCompraImportada[] // Added inverse relation
+}
+
+enum TipoConta {
+  PAGAR
+  RECEBER
+}
+
+enum StatusConta {
+  PENDENTE
+  PAGA_PARCIALMENTE
+  PAGA_TOTALMENTE
+  VENCIDA
+  CANCELADA
+}
+
+model Conta {
+  id             String      @id @default(cuid())
+  tipo           TipoConta
+  descricao      String
+  valor          Float
+  dataVencimento DateTime
+  dataPagamento  DateTime?
+  status         StatusConta @default(PENDENTE)
+  clienteId      String?     
+  cliente        Cliente?    @relation("ContasDoCliente", fields: [clienteId], references: [id])
+  fornecedorId   String?     
+  fornecedor     Fornecedor? @relation("ContasDoFornecedor", fields: [fornecedorId], references: [id])
+  orcamentoId    String?     
+  orcamento      Orcamento?  @relation("ContasDoOrcamento", fields: [orcamentoId], references: [id])
+  pedidoCompraId String?     
+  pedidoCompra   PedidoCompra? @relation("ContasDoPedidoCompra", fields: [pedidoCompraId], references: [id])
+  observacoes    String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  nfeCompraImportada NfeCompraImportada? // Added inverse relation
+}
+
+model OrdemProducao {
+  id             String    @id @default(cuid())
+  orcamentoId    String    @unique 
+  orcamento      Orcamento @relation(fields: [orcamentoId], references: [id])
+  dataEmissao    DateTime  @default(now())
+  dataPrevEntrega DateTime?
+  status         String    // Consider using an Enum here too, e.g., StatusOrdemProducao
+  observacoes    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  // Added missing fields from previous implementation
+  clienteId      String? // Should be derived from Orcamento, but good for denormalization if needed
+  responsavelId  String? // User responsible for this OP
+  responsavel    User?     @relation(fields: [responsavelId], references: [id])
+  itens          ItemOrdemProducao[]
+}
+
+model ItemOrdemProducao {
+    id              String   @id @default(cuid())
+    ordemProducaoId String
+    ordemProducao   OrdemProducao @relation(fields: [ordemProducaoId], references: [id], onDelete: Cascade)
+    descricao       String
+    quantidade      Float
+    unidade         String
+    observacoes     String?
+    // Add other relevant fields for production items, e.g., material, dimensions, etc.
+    createdAt       DateTime @default(now())
+}
+
+model Estoque {
+  id             String    @id @default(cuid())
+  produtoId      String?   // Can be a generic product or a specific item from an Orcamento/Visita
+  nomeProduto    String
+  descricao      String?
+  quantidade     Float
+  unidade        String    // e.g., m, m², un, pç
+  localizacao    String?
+  pontoReposicao Float?    // Alert when quantity reaches this point
+  observacoes    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  // lastUpdatedById String? // User who last updated
+  // lastUpdatedBy   User?     @relation("EstoqueUpdatesBy", fields: [lastUpdatedById], references: [id])
+}
+
+model ChecklistInstalacao {
+  id                  String    @id @default(cuid())
+  orcamentoId         String    @unique
+  orcamento           Orcamento @relation("ChecklistDoOrcamento", fields: [orcamentoId], references: [id])
+  dataPrevista        DateTime?
+  dataRealizada       DateTime?
+  status              StatusChecklist @default(PENDENTE)
+  instaladorId        String?   
+  instalador          User?     @relation("InstaladorChecklist", fields: [instaladorId], references: [id])
+  observacoes         String?
+  itensConferidos     Json?     // Array of { item: string, checked: boolean, obs: string }
+  assinaturaClienteUrl String?   
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  fotos ChecklistFoto[] @relation("FotosDoChecklist")
+}
+
+model ChecklistFoto {
+  id                String   @id @default(cuid())
+  checklistId       String
+  checklist         ChecklistInstalacao @relation("FotosDoChecklist", fields: [checklistId], references: [id], onDelete: Cascade)
+  url               String   
+  legenda           String?
+  tipo              String?  // e.g., ANTES, DURANTE, DEPOIS, PROBLEMA
+  createdAt         DateTime @default(now())
+}
+
+
+
+enum StatusNfeProcessamento {
+  PENDENTE_IMPORTACAO
+  IMPORTADA_AGUARDANDO_PROCESSAMENTO
+  PROCESSADA_PARCIALMENTE
+  PROCESSADA_COM_SUCESSO
+  ERRO_PROCESSAMENTO
+  AGUARDANDO_REVISAO_ADMIN
+  IGNORADA
+}
+
+model NfeCompraImportada {
+  id                  String   @id @default(cuid())
+  chaveAcesso         String   @unique
+  xmlContent          String?  // Store the full XML if needed, or path to it
+  dataEmissao         DateTime
+  valorTotal          Float
+  fornecedorNome      String
+  fornecedorCnpj      String
+  statusProcessamento StatusNfeProcessamento @default(PENDENTE_IMPORTACAO)
+  dataImportacao      DateTime @default(now())
+  dataProcessamento   DateTime?
+  observacoesErro     String?
+
+  fornecedorId String?    
+  fornecedor   Fornecedor? @relation(fields: [fornecedorId], references: [id])
+  
+  contaPagarId String?     @unique
+  contaPagar   Conta?      @relation(fields: [contaPagarId], references: [id])
+
+  itens ItemNfeCompraImportada[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ItemNfeCompraImportada {
+  id                 String  @id @default(cuid())
+  nfeCompraImportadaId String
+  nfeCompraImportada NfeCompraImportada @relation(fields: [nfeCompraImportadaId], references: [id], onDelete: Cascade)
+
+  codigoProduto      String? // Product code from NFe
+  descricaoProduto   String
+  ncm                String? // NCM code
+  cfop               String?
+  unidadeComercial   String  // Unit of measure (e.g., UN, CX, KG)
+  quantidade         Float
+  valorUnitario      Float
+  valorTotal         Float
+  
+  produtoEstoqueId   String? 
+  produtoEstoque     ProdutoEstoque? @relation(fields: [produtoEstoqueId], references: [id])
+  statusItem         String? // e.g., "PENDENTE_MATCH", "MATCH_CONFIRMADO", "NOVO_PRODUTO_CRIAR", "IGNORAR_ITEM"
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+

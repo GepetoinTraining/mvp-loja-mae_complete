@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordem de Produção - {{ ordem.idCurto }}</title>
+    <style>
+        body {
+            font-family: "Noto Sans CJK SC", "WenQuanYi Zen Hei", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fff;
+            color: #333;
+            font-size: 10pt;
+        }
+        .container {
+            width: 90%;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #000;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 18pt;
+            color: #000;
+        }
+        header p {
+            margin: 5px 0 0;
+            font-size: 10pt;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+            color: #555;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .grid-item p, .details p {
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+        .details strong {
+            display: inline-block;
+            width: 150px; /* Adjust as needed */
+            color: #444;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            font-size: 9pt;
+        }
+        td {
+            font-size: 9pt;
+        }
+        .total-section {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .total-section p {
+            font-size: 11pt;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ccc;
+            font-size: 8pt;
+            color: #777;
+        }
+        .logo {
+            max-width: 150px; /* Adjust as needed */
+            max-height: 70px; /* Adjust as needed */
+            margin-bottom: 10px;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: white;
+            display: inline-block;
+            font-size: 10pt;
+        }
+        .status-PENDENTE { background-color: #ffc107; color: #000; } /* Amber */
+        .status-EM_PRODUCAO { background-color: #2196f3; } /* Blue */
+        .status-CONCLUIDA { background-color: #4caf50; } /* Green */
+        .status-CANCELADA { background-color: #f44336; } /* Red */
+
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <!-- <img src="[Your Logo URL or Base64 Data]" alt="Logo da Empresa" class="logo"> -->
+            <h1>Ordem de Produção</h1>
+            <p>Sorian Cortinas e Decorações</p>
+        </header>
+
+        <div class="section">
+            <div class="grid">
+                <div class="grid-item details">
+                    <p><strong>OP Nº:</strong> {{ ordem.idCurto }}</p>
+                    <p><strong>Data de Criação:</strong> {{ ordem.dataCriacaoFormatada }}</p>
+                    <p><strong>Status:</strong> <span class="status-badge status-{{ ordem.status }}">{{ ordem.statusFormatado }}</span></p>
+                </div>
+                <div class="grid-item details">
+                    <p><strong>Orçamento Nº:</strong> {{ ordem.orcamento.id.substring(0,8) }}...</p>
+                    <p><strong>Data Prev. Entrega:</strong> {{ ordem.dataPrevistaEntregaFormatada }}</p>
+                    <p><strong>Responsável Produção:</strong> {{ ordem.responsavel.name }} ({{ ordem.responsavel.email }})</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Informações do Cliente</div>
+            <div class="details">
+                <p><strong>Cliente:</strong> {{ cliente.nome }}</p>
+                <p><strong>CPF/CNPJ:</strong> {{ cliente.cpfCnpj || "N/A" }}</p>
+                <p><strong>Telefone:</strong> {{ cliente.telefone || "N/A" }}</p>
+                <p><strong>Email:</strong> {{ cliente.email || "N/A" }}</p>
+                <p><strong>Endereço:</strong> {{ cliente.enderecoCompleto || "N/A" }}</p>
+            </div>
+        </div>
+        
+        {% if ordem.orcamento and ordem.orcamento.vendedor %}
+        <div class="section">
+            <div class="section-title">Informações do Vendedor</div>
+            <div class="details">
+                <p><strong>Vendedor:</strong> {{ vendedor.name }}</p>
+                <p><strong>Email:</strong> {{ vendedor.email }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="section">
+            <div class="section-title">Itens da Ordem de Produção</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Descrição</th>
+                        <th>Qtd.</th>
+                        <th>Un.</th>
+                        <th>Observações do Item</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in itens %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ item.descricao }}</td>
+                        <td>{{ item.quantidadeFormatada }}</td>
+                        <td>{{ item.unidade }}</td>
+                        <td>{{ item.observacoes or "-" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if ordem.observacoesGerais %}
+        <div class="section">
+            <div class="section-title">Observações Gerais da Ordem de Produção</div>
+            <div class="details">
+                <p>{{ ordem.observacoesGerais }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <footer>
+            <p>Documento gerado em: {{ dataGeracao }}</p>
+            <p>Sorian Cortinas e Decorações - Transformando Ambientes com Elegância</p>
+        </footer>
+    </div>
+</body>
+</html>
+

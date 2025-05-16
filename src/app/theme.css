@@ -1,0 +1,93 @@
+/* src/app/themes.css */
+
+/*--------------------------------------------------------------
+1. Include Tailwind and base globals
+--------------------------------------------------------------*/
+@import "tailwindcss/preflight";
+@tailwind utilities;
+
+/* Import your global design tokens and resets */
+@import "./globals.css";
+
+/*--------------------------------------------------------------
+2. Theme Definitions
+   Using `class` strategy via next-themes (attribute="class").
+--------------------------------------------------------------*/
+@layer base {
+  /* Light Theme (default) */
+  .light {
+    --background:            255 255 255;
+    --foreground:            17 24 39;
+    --muted:                 245 245 245;
+    --muted-foreground:      80 80 80;
+    --secondary:             240 240 240;
+    --secondary-foreground:  30 30 30;
+    --accent:                99 102 241;
+    --accent-foreground:     255 255 255;
+    --popover:               255 255 255;
+    --popover-foreground:    30 30 30;
+    --card:                  255 255 255;
+    --card-foreground:       30 30 30;
+    --border:                226 232 240;
+    --input:                 255 255 255;
+    --ring:                  99 102 241;
+    --radius:                0.5rem;
+  }
+
+  /* Dark Theme */
+  .dark {
+    --background:            15 23 42;
+    --foreground:            226 232 240;
+    --muted:                 31 41 55;
+    --muted-foreground:      148 163 184;
+    --secondary:             31 41 55;
+    --secondary-foreground:  226 232 240;
+    --accent:                138 211 104;
+    --accent-foreground:     17 24 39;
+    --popover:               31 41 55;
+    --popover-foreground:    226 232 240;
+    --card:                  31 41 55;
+    --card-foreground:       226 232 240;
+    --border:                55 65 81;
+    --input:                 31 41 55;
+    --ring:                  138 211 104;
+    --radius:                0.5rem;
+  }
+
+  /* Sepia Theme */
+  .sepia {
+    --background:            244 236 211;
+    --foreground:            60 35 12;
+    --muted:                 237 229 197;
+    --muted-foreground:      99 76 46;
+    --secondary:             249 241 196;
+    --secondary-foreground:  60 35 12;
+    --accent:                201 173 50;
+    --accent-foreground:     255 255 255;
+    --popover:               249 241 196;
+    --popover-foreground:    60 35 12;
+    --card:                  249 241 196;
+    --card-foreground:       60 35 12;
+    --border:                197 172 135;
+    --input:                 255 255 242;
+    --ring:                  201 173 50;
+    --radius:                0.5rem;
+  }
+}
+
+/*--------------------------------------------------------------
+3. Utility to indicate current theme (optional)
+--------------------------------------------------------------*/
+@layer utilities {
+  .theme-indicator {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background-color: rgba(var(--card), 0.8);
+    color: rgb(var(--card-foreground));
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    z-index: 50;
+  }
+}

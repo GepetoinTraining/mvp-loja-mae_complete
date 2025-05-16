@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orçamento - {{ orcamento.id }}</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            font-size: 12px;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #2c3e50;
+        }
+        .header p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .details-section, .items-section, .footer-section {
+            margin-bottom: 20px;
+        }
+        .details-section h2, .items-section h2 {
+            font-size: 18px;
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .details-grid p {
+            margin: 5px 0;
+            padding: 8px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .details-grid p strong {
+            color: #555;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .total-row td {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .footer-section {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 10px;
+            color: #777;
+        }
+        .qr-code {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .qr-code img {
+            max-width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ORÇAMENTO</h1>
+            <p><strong>Sorian Cortinas e Decorações</strong></p>
+            <p>Data de Emissão: {{ orcamento.createdAt | date("%d/%m/%Y") }}</p>
+        </div>
+
+        <div class="details-section">
+            <h2>Detalhes do Orçamento e Cliente</h2>
+            <div class="details-grid">
+                <p><strong>Orçamento Nº:</strong> {{ orcamento.id }}</p>
+                <p><strong>Status:</strong> {{ orcamento.status }}</p>
+                <p><strong>Cliente:</strong> {{ orcamento.cliente.nome }}</p>
+                <p><strong>Telefone:</strong> {{ orcamento.cliente.telefone }}</p>
+                <p><strong>Email:</strong> {{ orcamento.cliente.email if orcamento.cliente.email else "N/A" }}</p>
+                <p><strong>Vendedor:</strong> {{ orcamento.vendedor.name if orcamento.vendedor else "N/A" }}</p>
+            </div>
+            {% if orcamento.observacoes %}
+            <p style="margin-top: 15px;"><strong>Observações Gerais:</strong><br>{{ orcamento.observacoes }}</p>
+            {% endif %}
+        </div>
+
+        <div class="items-section">
+            <h2>Itens do Orçamento</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Descrição</th>
+                        <th>L x A (m)</th>
+                        <th>M² / Un.</th>
+                        <th>Preço Unit. (R$)</th>
+                        <th>Preço Final (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in orcamento.itens %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td><strong>{{ item.tipoProduto }}</strong><br>{{ item.descricao }}</td>
+                        <td>{{ "%.2f" | format(item.largura if item.largura else 0) }} x {{ "%.2f" | format(item.altura if item.altura else 0) }}</td>
+                        <td>{{ "%.2f" | format(item.metragem if item.metragem else 0) }}</td>
+                        <td>{{ "%.2f" | format(item.precoUnitario if item.precoUnitario else 0) }}</td>
+                        <td>{{ "%.2f" | format(item.precoFinal if item.precoFinal else 0) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="5" style="text-align: right;"><strong>SUBTOTAL:</strong></td>
+                        <td>R$ {{ "%.2f" | format(orcamento.subtotal if orcamento.subtotal else 0) }}</td>
+                    </tr>
+                    {% if orcamento.desconto and orcamento.desconto > 0 %}
+                    <tr class="total-row">
+                        <td colspan="5" style="text-align: right;"><strong>Desconto:</strong></td>
+                        <td>R$ {{ "%.2f" | format(orcamento.valorDesconto if orcamento.valorDesconto else 0) }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr class="total-row" style="background-color: #e8f4fd;">
+                        <td colspan="5" style="text-align: right;"><strong>VALOR TOTAL:</strong></td>
+                        <td>R$ {{ "%.2f" | format(orcamento.valorTotal if orcamento.valorTotal else 0) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        {% if orcamento.qrCodePix %}
+        <div class="qr-code">
+            <h3>Pague com PIX</h3>
+            <img src="{{ orcamento.qrCodePix }}" alt="PIX QR Code">
+            <p><small>Chave PIX Copia e Cola (se aplicável)</small></p>
+        </div>
+        {% endif %}
+
+        <div class="footer-section">
+            <p>Obrigado pela sua preferência!</p>
+            <p>Sorian Cortinas e Decorações - Contato: (XX) XXXXX-XXXX</p>
+            <p>Este orçamento é válido por X dias.</p>
+        </div>
+    </div>
+</body>
+</html>
+
