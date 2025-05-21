@@ -32,13 +32,17 @@ cd mvp-loja-mae
 
 ## 3. Install Dependencies
 
-Install the project dependencies using npm:
+Install the project dependencies using your preferred package manager. The commands below show `npm`, but `pnpm` or `yarn` work as well:
 
 ```bash
 npm install
+# or
+pnpm install
+# or
+yarn install
 ```
 
-This command will download and install all the necessary packages defined in `package.json` and `package-lock.json`.
+This will download and install all the packages defined in `package.json`. `npm install` uses `package-lock.json`, while `pnpm install` relies on `pnpm-lock.yaml`.
 
 ## 4. Set Up Environment Variables
 
