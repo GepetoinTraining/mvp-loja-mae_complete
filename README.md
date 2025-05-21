@@ -59,6 +59,7 @@ DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE_NAME?schema=public"
 # For NextAuth.js (generate a secret using: openssl rand -base64 32)
 # NEXTAUTH_SECRET="YOUR_NEXTAUTH_SECRET"
 # NEXTAUTH_URL="http://localhost:3000" # Or the port your app runs on
+# OPENAI_API_KEY="your-openai-api-key"
 ```
 
 **Important Notes on `DATABASE_URL`**:
