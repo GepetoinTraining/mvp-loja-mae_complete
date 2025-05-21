@@ -16,6 +16,19 @@ const MAX_DISCOUNT_PERCENTAGE_VENDEDOR = 10; // Vendedor can give up to 10% disc
 const MAX_DISCOUNT_PERCENTAGE_ADMIN_WITHOUT_ALERT = 20; // Admin can give up to 20% without special alert
 
 /**
+ * Collection of configurable business rules used across the application.
+ */
+export const businessRules = {
+  nfe: {
+    /**
+     * Number of days after the emission date to use as a fallback due date
+     * when an imported NFe does not specify one.
+     */
+    fallbackDueDateDays: 30,
+  },
+} as const;
+
+/**
  * Validates a budget against defined business rules.
  * For now, focuses on discount rules.
  */
