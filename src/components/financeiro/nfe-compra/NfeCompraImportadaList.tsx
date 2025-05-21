@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { NfeCompraImportada, ItemNfeCompraImportada, Fornecedor, ProdutoEstoque } from "@prisma/client";
-import { Button } from "@/src/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";

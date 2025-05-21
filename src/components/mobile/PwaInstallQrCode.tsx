@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { QRCodeCanvas } from 'qrcode.react'; // Changed to named import QRCodeCanvas
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function PwaInstallQrCode() {
   const [appUrl, setAppUrl] = useState<string | null>(null);

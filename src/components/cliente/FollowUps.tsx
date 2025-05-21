@@ -2,9 +2,9 @@
 
 import type { ClienteDTO } from "@/lib/types";
 import { useState } from "react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/src/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/src/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   cliente: ClienteDTO;
