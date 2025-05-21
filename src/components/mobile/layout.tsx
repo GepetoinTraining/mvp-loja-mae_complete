@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
-import { Toaster } from "@/src/components/ui/sonner"; // For shadcn/ui toast, or use react-hot-toast
+import { Toaster } from "@/components/ui/sonner"; // For shadcn/ui toast, or use react-hot-toast
 import { AuthProvider } from "@/components/auth/AuthProvider"; // Assuming you have an AuthProvider
 
 const APP_NAME = "MVP Loja Mae";

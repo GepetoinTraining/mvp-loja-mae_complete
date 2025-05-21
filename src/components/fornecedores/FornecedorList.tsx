@@ -2,8 +2,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table";
-import { Button } from "@/src/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 import { Eye, Edit3, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Fornecedor } from "@prisma/client"; // Assuming Prisma client type

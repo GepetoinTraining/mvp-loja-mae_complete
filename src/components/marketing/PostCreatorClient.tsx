@@ -1,11 +1,11 @@
 // /home/ubuntu/mvp-loja-mae3/mvp-loja-mae/src/components/marketing/PostCreatorClient.tsx
 "use client";
 
-import { Button } from "@/src/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/src/components/ui/checkbox";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 

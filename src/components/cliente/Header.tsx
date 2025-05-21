@@ -2,7 +2,7 @@
 
 import type { ClienteDTO } from "@/lib/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent } from "@/src/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { User } from "lucide-react";
 
 export function ClientSummaryCard({ cliente }: { cliente: ClienteDTO }) {
