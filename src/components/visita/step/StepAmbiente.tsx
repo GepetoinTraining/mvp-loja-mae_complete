@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useVisitaFormState } from "../useVisitaFormState";
 
 const ambientesPadrao = [
   "Sala",
@@ -21,6 +22,7 @@ export function StepAmbiente({
 }) {
   const [ambienteSelecionado, setAmbienteSelecionado] = useState("");
   const [observacoes, setObservacoes] = useState("");
+  const { addAmbiente } = useVisitaFormState();
 
   const podeAvancar = ambienteSelecionado !== "";
 
@@ -64,7 +66,10 @@ export function StepAmbiente({
         </button>
 
         <button
-          onClick={onNext}
+          onClick={() => {
+            addAmbiente({ nome: ambienteSelecionado, observacoes });
+            onNext();
+          }}
           disabled={!podeAvancar}
           className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/90"
         >

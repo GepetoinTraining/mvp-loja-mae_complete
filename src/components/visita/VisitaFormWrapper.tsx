@@ -2,12 +2,12 @@
 
 import React from "react";
 import { useEffect, useState } from "react";
-import { StepEndereco } from "./steps/StepEndereco";
-import { StepAmbiente } from "./steps/StepAmbiente";
+import { StepEndereco } from "./step/StepEndereco";
+import { StepAmbiente } from "./step/StepAmbiente";
 import { useVisitaFormState } from "./useVisitaFormState";
-import { StepCamposProduto } from "./steps/StepCamposProduto";
-import { StepProduto } from "./steps/StepProduto";
-import { StepFoto } from "./steps/StepFoto";
+import { StepCamposProduto } from "./step/StepCamposProduto";
+import { StepProduto } from "./step/StepProduto";
+import { StepFoto } from "./step/StepFoto";
 import { VisitaResumo } from "./VisitaResumo";
 
 export function VisitaFormWrapper({ visita }: { visita: any }) {
@@ -27,7 +27,7 @@ export function VisitaFormWrapper({ visita }: { visita: any }) {
     <StepEndereco visita={visita} onNext={next} />,
     <StepAmbiente onBack={back} onNext={next} />,
     <StepProduto onBack={back} onNext={next} />,
-    <StepCamposProduto produto={{ tipo: "cortina" }} onConfirm={next} />,
+    <StepCamposProduto onConfirm={next} />,
     <StepFoto onNext={next} />,
     <VisitaResumo />
   ];
