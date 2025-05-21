@@ -67,9 +67,9 @@ const configSchemaPOST = z.object({
   ),
 });
 
-export const config = {
+export const routeSegmentConfig = {
   api: {
-    bodyParser: false, 
+    bodyParser: false,
   },
 };
 
