@@ -1,7 +1,7 @@
 // src/app/api/estoque/[id]/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { auth } from "@/../auth"; // Adjusted path
+import { auth } from "@/lib/auth"; // Adjusted path
 import { z } from "zod";
 
 const estoqueUpdateSchema = z.object({

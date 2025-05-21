@@ -8,7 +8,7 @@ import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
 import { Alert, AlertDescription } from "../../components/ui/alert";
-import { Loader2 } from "lucide-react"; // Assuming lucide-react is installed for icons
+import { Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -38,7 +38,7 @@ export default function LoginPage() {
 
       const data = await res.json();
       setUser(data.user);
-      router.push("/vendas"); // Or a more appropriate dashboard route
+      router.push("/vendas");
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -47,8 +47,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted p-4">
-      <Card className="w-full max-w-sm">
+    <main className="min-h-screen bg-background text-foreground font-sans flex items-center justify-center px-4 py-12">
+      <Card className="w-full max-w-sm shadow-md border-border">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center text-primary">Login</CardTitle>
           {/* Optional: <CardDescription>Acesse sua conta</CardDescription> */}
@@ -57,8 +57,6 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <Alert variant="destructive">
-                {/* <AlertCircle className="h-4 w-4" /> */}
-                {/* <AlertTitle>Erro</AlertTitle> */}
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
@@ -102,7 +100,6 @@ export default function LoginPage() {
           </form>
         </CardContent>
       </Card>
-    </div>
+    </main>
   );
 }
-

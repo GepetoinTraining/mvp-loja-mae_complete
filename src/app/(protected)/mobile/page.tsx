@@ -1,6 +1,6 @@
 "use client";
 
-import { PwaInstallQrCode } from "@/components/PwaInstallQrCode";
+import { PwaInstallQrCode } from "@/components/mobile/PwaInstallQrCode";
 import { Separator } from "@/components/ui/separator";
 
 export default function PwaInstallPage() {

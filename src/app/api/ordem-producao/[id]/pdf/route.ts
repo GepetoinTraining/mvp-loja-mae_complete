@@ -1,7 +1,7 @@
 // src/app/api/ordem-producao/[id]/pdf/route.ts
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { auth } from "@/../auth"; // Adjusted path
+import { auth } from "@/lib/auth"; // Adjusted path
 import { WeasyPrint } from "weasyprint"; // Using WeasyPrint for HTML to PDF
 import fs from "fs/promises";
 import path from "path";

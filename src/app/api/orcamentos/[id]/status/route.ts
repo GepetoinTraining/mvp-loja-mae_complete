@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { auth } from "@/../auth";
+import { auth } from "@/lib/auth";
 import { z } from "zod";
 import bcrypt from "bcryptjs"; // For password hashing
 

@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db";
 import { z } from "zod";
 import { getToken } from "next-auth/jwt";
-import { Role } from "@/types/Role";
+import { Role } from "@/lib/types";
 import { businessRules } from "@/lib/businessRules";
 import xml2js from 'xml2js';
 
 const paramsSchema = z.object({
   id: z.string().uuid(),
 });
+
 
 // Enhanced error handling for XML parsing
 async function getDueDatesFromXml(xmlContent: string): Promise<string[]> {

@@ -1,4 +1,4 @@
-import NfeCompraClientPage from "@/components/admin/nfe-compras/NfeCompraClientPage";
+import NfeCompraClientPage from "@/components/admin/NfeCompraClientPage";
 
 export default async function NfeComprasImportadasPage() {
   // Data fetching could also happen here if we want to pass initial data to the client component

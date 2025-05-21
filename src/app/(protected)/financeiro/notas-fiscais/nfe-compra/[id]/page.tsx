@@ -1,4 +1,4 @@
-import { NfeCompraDetailView } from "@/components/nfe-compra/NfeCompraDetailView";
+import { NfeCompraDetailView } from "@/components/financeiro/nfe-compra/NfeCompraDetailView";
 
 interface NfeCompraDetailPageProps {
   params: {

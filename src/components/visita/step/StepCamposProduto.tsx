@@ -1,15 +1,15 @@
 "use client";
 
-import { FormCortina } from "./produtos/FormCortina";
-import { FormPersiana } from "./produtos/FormPersiana";
-import { FormPapelParede } from "./produtos/FormPapelParede";
-import { FormRodape } from "./produtos/FormRodape";
-import { FormBoiserie } from "./produtos/FormBoiserie";
-import { FormMoveis } from "./produtos/marcenaria/FormMoveis";
-import { FormGranito } from "./produtos/marcenaria/FormGranito";
-import { FormAlmofadas } from "./produtos/FormAlmofadas";
-import { FormTrilho } from "./produtos/FormTrilho";
-import { FormOutros } from "./produtos/FormOutros";
+import { FormCortina } from "./produto/FormCortina";
+import { FormPersiana } from "./produto/FormPersiana";
+import { FormPapelParede } from "./produto/FormPapelParede";
+import { FormRodape } from "./produto/FormRodape";
+import { FormBoiserie } from "./produto/FormBoiserie";
+import { FormMoveis } from "./produto/marcenaria/FormMoveis";
+import { FormGranito } from "./produto/marcenaria/FormGranito";
+import { FormAlmofadas } from "./produto/FormAlmofadas";
+import { FormTrilho } from "./produto/FormTrilho";
+import { FormOutros } from "./produto/FormOutros";
 import { useVisitaFormState } from "../useVisitaFormState";
 import { useState } from "react";
 

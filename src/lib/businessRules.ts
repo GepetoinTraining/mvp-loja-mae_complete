@@ -14,7 +14,13 @@ interface BusinessRuleValidationResult {
 
 const MAX_DISCOUNT_PERCENTAGE_VENDEDOR = 10; // Vendedor can give up to 10% discount
 const MAX_DISCOUNT_PERCENTAGE_ADMIN_WITHOUT_ALERT = 20; // Admin can give up to 20% without special alert
-
+export const businessRules = {
+  nfe: {
+    fallbackDueDateDays: 30, // default due date offset for fallback payments
+  },
+  validateOrcamentoBusinessRules,
+  calculateItemPrice,
+};
 /**
  * Validates a budget against defined business rules.
  * For now, focuses on discount rules.

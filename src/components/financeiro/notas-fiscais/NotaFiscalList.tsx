@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Button } from "@/src/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -122,18 +122,29 @@ export function NotaFiscalList() {
                 <TableCell>{format(new Date(nf.dataEmissao), "dd/MM/yyyy", { locale: ptBR })}</TableCell>
                 <TableCell>{nf.numero || "-"}</TableCell>
                 <TableCell>
-                  <Button asChild variant="outline" size="sm" className="mr-2">
-                    <Link href={`/financeiro/notas-fiscais/editar/${nf.id}" title="Editar">
-                      <Edit3 className="h-4 w-4" />
-                    </Link>
-                  </Button>
-                  {/* Placeholder for view/download PDF - to be implemented with SEFAZ integration */}
-                  {(nf.status === "AUTORIZADA" || nf.status === "GERADA") && 
-                    <Button variant="outline" size="sm" title="Ver/Baixar PDF" disabled>
-                        <FileText className="h-4 w-4" />
-                    </Button>
-                  }
-                </TableCell>
+  <Button asChild variant="outline" size="sm" className="mr-2">
+    <Link href={`/financeiro/notas-fiscais/editar/${nf.id}`} title="Editar">
+      <Edit3 className="h-4 w-4" />
+    </Link>
+  </Button>
+  
+  {(nf.status === "AUTORIZADA" || nf.status === "GERADA") && 
+    <Button
+      asChild
+      variant="outline"
+      size="sm"
+      title="Ver/Baixar PDF"
+    >
+      <a
+        href={`/api/notas-fiscais/${nf.id}/pdf`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <FileText className="h-4 w-4" />
+      </a>
+    </Button>
+  }
+</TableCell>
               </TableRow>
             ))}
           </TableBody>

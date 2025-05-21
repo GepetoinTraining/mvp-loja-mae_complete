@@ -1,19 +1,13 @@
 "use client";
 
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
-import { ptBR } from "date-fns/locale";
-import { format, parse, startOfWeek, getDay } from "date-fns";
-import "react-big-calendar/lib/css/react-big-calendar.css";
-
-const locales = { "pt-BR": ptBR };
-
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek: () => startOfWeek(new Date(), { weekStartsOn: 1 }),
-  getDay,
-  locales,
-});
+import { useEffect, useState } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import ptBrLocale from "@fullcalendar/core/locales/pt-br.js";
+import "@fullcalendar/daygrid/index.css";
+import "@fullcalendar/timegrid/index.css";
 
 export interface Evento {
   id: string;
@@ -30,24 +24,37 @@ interface Props {
 }
 
 export function Calendario({ eventos, height = 600 }: Props) {
+  const [mappedEventos, setMappedEventos] = useState([]);
+
+  useEffect(() => {
+    const parsed = eventos.map((e) => ({
+      id: e.id,
+      title: e.title,
+      start: e.start.toISOString(),
+      end: e.end.toISOString(),
+      allDay: e.allDay ?? false,
+    }));
+    setMappedEventos(parsed);
+  }, [eventos]);
+
   return (
     <div className="bg-white rounded-lg shadow p-4">
-      <Calendar
-        localizer={localizer}
-        events={eventos}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height }}
-        views={["month", "week", "day"]}
-        messages={{
-          today: "Hoje",
-          previous: "Anterior",
-          next: "Próximo",
-          month: "Mês",
-          week: "Semana",
-          day: "Dia",
-          agenda: "Agenda",
-          showMore: (total) => `+${total} mais`,
+      <FullCalendar
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        initialView="dayGridMonth"
+        headerToolbar={{
+          start: "prev,next today",
+          center: "title",
+          end: "dayGridMonth,timeGridWeek,timeGridDay",
+        }}
+        height={height}
+        locale={ptBrLocale}
+        events={mappedEventos}
+        eventDisplay="block"
+        eventColor="#2563eb"
+        dayMaxEventRows={true}
+        views={{
+          dayGridMonth: { dayMaxEventRows: 3 },
         }}
       />
     </div>

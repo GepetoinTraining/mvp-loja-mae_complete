@@ -1,6 +1,6 @@
 // src/app/api/ai/generate-product-description/route.ts
 import { NextResponse } from "next/server";
-import { auth } from "@/../auth"; // Adjusted path
+import { auth } from "@/lib/auth"; // Adjusted path
 
 // This is a mock implementation. In a real scenario, you would integrate with an AI service.
 async function generateDescriptionWithAI(productType: string, currentDescription?: string): Promise<string> {

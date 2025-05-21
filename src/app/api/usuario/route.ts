@@ -1,15 +1,27 @@
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getUserFromToken } from "@/lib/auth";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET!; // Or your actual key if named differently
 
 export async function PUT(req: Request) {
-  const cookieStore = await cookies()
-  const token = cookieStore.get("token")?.value
-  if (!token) return NextResponse.redirect(new URL("/", req.url))
-  }
-
   try {
+    const cookieStore = cookies();
+    const token = cookieStore.get("token")?.value;
+
+    if (!token) {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+
+    let user: any;
+    try {
+      user = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+      return NextResponse.json({ error: "Token inválido." }, { status: 401 });
+    }
+
     const body = await req.json();
     const { name, email, senha, tituloLoja, avatarUrl } = body;
 
@@ -30,7 +42,7 @@ export async function PUT(req: Request) {
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id: user.id }, // 🔐 ID seguro do token
+      where: { id: user.id }, // From decoded token
       data: updateData,
     });
 

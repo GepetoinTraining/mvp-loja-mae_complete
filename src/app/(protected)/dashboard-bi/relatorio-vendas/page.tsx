@@ -1,13 +1,14 @@
 import { SalesReportClient } from "@/components/reports/SalesReportClient";
 
 export default async function SalesReportPage() {
-  // This page will host the client component that fetches and displays the sales report.
-  // It can also include server-side elements if needed for initial data or configuration.
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-6">Relatório de Vendas</h1>
+    <section className="bg-background text-foreground font-sans container mx-auto px-4 md:px-8 py-12 space-y-6">
+      <header>
+        <h1 className="text-3xl font-bold tracking-tight leading-tight">
+          Relatório de Vendas
+        </h1>
+      </header>
       <SalesReportClient />
-    </div>
+    </section>
   );
 }
-

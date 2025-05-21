@@ -1,20 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/src/components/ui/button";
-import { Switch } from "@/src/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import {
   getOfflineVisitas,
   getOfflineChecklists,
   OfflineItem
-} from "@/lib/offline-utils";
+} from "@/utils/offline-utils";
 import {
   triggerSync,
   saveSyncPreferences,
-} from "@/lib/sync-manager";
+} from "@/utils/sync-manager";
 
 interface SyncPreferences {
   allowMobileData: boolean;

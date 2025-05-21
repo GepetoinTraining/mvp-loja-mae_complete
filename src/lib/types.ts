@@ -8,6 +8,17 @@ export {
   TipoCliente
 };
 
+export const Roles = [
+  "ADMIN",
+  "VENDEDOR",
+  "COMPRADOR",
+  "FINANCEIRO",
+  "CLIENTE",
+  "INSTALADOR",
+  "MARKETER",
+] as const;
+
+export type Role = typeof Roles[number];
 
 /**
  * Payload armazenado no JWT após autenticação
@@ -16,7 +27,7 @@ export type AuthPayload = {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role: Role;
   avatarUrl?: string;
   tituloLoja?: string;
 };

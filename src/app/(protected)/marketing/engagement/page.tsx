@@ -1,5 +1,5 @@
 // /home/ubuntu/mvp-loja-mae3/mvp-loja-mae/src/app/(protected)/marketing/engagement/page.tsx
-import EngagementDashboardClient from "@/components/marketing/EngagementDashboardClient";
+import EngagementDashboardClient from "@/components/meta/EngagementDashboardClient";
 import { Suspense } from "react";
 
 export default function EngagementDashboardPage() {

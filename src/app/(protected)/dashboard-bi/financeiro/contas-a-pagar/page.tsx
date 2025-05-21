@@ -2,10 +2,13 @@ import { AccountsPayableReportClient } from "@/components/reports/AccountsPayabl
 
 export default async function AccountsPayableReportPage() {
   return (
-    <div className="container mx-auto py-10">
-      <h1 className="text-3xl font-bold mb-6">Relatório de Contas a Pagar (Aging)</h1>
+    <section className="bg-background text-foreground font-sans container mx-auto px-4 md:px-8 py-12 space-y-6">
+      <header>
+        <h1 className="text-3xl font-bold tracking-tight leading-tight">
+          Relatório de Contas a Pagar (Aging)
+        </h1>
+      </header>
       <AccountsPayableReportClient />
-    </div>
+    </section>
   );
 }
-

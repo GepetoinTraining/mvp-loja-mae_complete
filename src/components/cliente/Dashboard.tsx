@@ -9,7 +9,7 @@ import type {
   FollowUpDTO
 } from "@/lib/types";
 import { useAuthStore } from "@/store/useAuthStore";
-import { Button } from "@/src/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { ClientTabs } from "./Tabs";
 import { ClientSummaryCard } from "./Header";
 

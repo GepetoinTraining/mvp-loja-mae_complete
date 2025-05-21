@@ -1,5 +1,5 @@
-import { NfeCompraImportadaList } from "@/components/nfe-compra/NfeCompraImportadaList";
-import { Button } from "@/src/components/ui/button";
+import { NfeCompraImportadaList } from "@/components/financeiro/nfe-compra/NfeCompraImportadaList";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default async function NfeCompraPage() {

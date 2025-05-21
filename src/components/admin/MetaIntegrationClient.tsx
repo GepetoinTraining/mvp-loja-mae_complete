@@ -1,7 +1,7 @@
 // /home/ubuntu/mvp-loja-mae3/mvp-loja-mae/src/components/admin/MetaIntegrationClient.tsx
 "use client";
 
-import { Button } from "@/src/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 

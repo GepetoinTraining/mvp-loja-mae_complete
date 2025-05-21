@@ -1,32 +1,24 @@
-// components/admin/CalendarioAdmin.tsx
 "use client";
 
 import { useEffect, useState } from "react";
-import { Calendar, dayjsLocalizer, Event } from "react-big-calendar";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
+import ptBrLocale from "@fullcalendar/core/locales/pt-br";
 import dayjs from "dayjs";
-import "dayjs/locale/pt-br"; // Import pt-BR locale for dayjs
-import weekday from "dayjs/plugin/weekday"; // For getDay and startOfWeek equivalent
-import localeData from "dayjs/plugin/localeData"; // For localizer
-import customParseFormat from "dayjs/plugin/customParseFormat"; // If needed for parsing
+import "@/styles/fullcalendar.css";
 
-import "react-big-calendar/lib/css/react-big-calendar.css";
 
-// Extend dayjs with plugins
-dayjs.extend(weekday);
-dayjs.extend(localeData);
-dayjs.extend(customParseFormat);
-dayjs.locale("pt-br"); // Set pt-BR as the default locale for dayjs
-
-const localizer = dayjsLocalizer(dayjs);
 
 const VISITA_COLORS: Record<string, string> = {
-  medicao: "#2563eb", // azul
-  instalacao: "#16a34a", // verde
-  manutencao: "#d97706", // laranja
+  medicao: "#2563eb",     // azul
+  instalacao: "#16a34a",  // verde
+  manutencao: "#d97706",  // laranja
 };
 
 export function CalendarioAdmin() {
-  const [eventos, setEventos] = useState<Event[]>([]);
+  const [eventos, setEventos] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -35,12 +27,15 @@ export function CalendarioAdmin() {
         if (!r.ok) throw new Error("Resposta inválida");
         return r.json();
       })
-      .then((data: Array<{ title: string; start: string; end: string; allDay: boolean }>) => {
-        // converte strings em Date()
-        const parsed = data.map((e) => ({
-          ...e,
-          start: dayjs(e.start).toDate(), // Use dayjs to parse and convert to Date
-          end: dayjs(e.end).toDate(),     // Use dayjs to parse and convert to Date
+      .then((data) => {
+        const parsed = data.map((e: any) => ({
+          title: e.title,
+          start: dayjs(e.start).toISOString(),
+          end: dayjs(e.end).toISOString(),
+          allDay: e.allDay,
+          extendedProps: {
+            tipoVisita: e.tipoVisita || "",
+          },
         }));
         setEventos(parsed);
       })
@@ -58,40 +53,27 @@ export function CalendarioAdmin() {
   return (
     <div className="p-6 bg-white rounded shadow">
       <h2 className="text-xl font-semibold mb-4">Calendário Administrativo</h2>
-      <Calendar
-        localizer={localizer}
-        events={eventos}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 600 }}
-        eventPropGetter={(event) => {
-          // pega o tipo com fallback para string vazia
-          const tipoRaw = (event as any).resource?.tipoVisita;
-          const tipo = typeof tipoRaw === "string" ? tipoRaw.toLowerCase() : "";
-          // mapa de cores
-          const color = VISITA_COLORS[tipo] ?? "#2563eb";
-          return {
-            style: {
-              backgroundColor: color,
-              borderColor: color,
-            },
-          };
+      <FullCalendar
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        initialView="dayGridMonth"
+        headerToolbar={{
+          start: "prev,next today",
+          center: "title",
+          end: "dayGridMonth,timeGridWeek,timeGridDay",
         }}
-        messages={{
-          today: "Hoje",
-          previous: "Anterior",
-          next: "Próximo",
-          month: "Mês",
-          week: "Semana",
-          day: "Dia",
-          agenda: "Agenda",
-          date: "Data",
-          time: "Hora",
-          event: "Evento",
-          showMore: (total) => `+ Ver mais (${total})`,
+        height={600}
+        locale={ptBrLocale}
+        events={eventos}
+        eventContent={(arg) => {
+          const tipo = arg.event.extendedProps.tipoVisita?.toLowerCase?.() || "";
+          const color = VISITA_COLORS[tipo] ?? "#2563eb";
+          return (
+            <div style={{ backgroundColor: color, padding: "2px 4px", borderRadius: 4 }}>
+              {arg.event.title}
+            </div>
+          );
         }}
       />
     </div>
   );
 }
-

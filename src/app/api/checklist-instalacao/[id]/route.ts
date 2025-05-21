@@ -1,7 +1,7 @@
 // src/app/api/checklist-instalacao/[id]/route.ts
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { auth } from "@/../auth"; // Assuming auth.ts is in the root
+import { auth } from "@/lib/auth"; // Assuming auth.ts is in the root
 
 interface Params {
   params: {

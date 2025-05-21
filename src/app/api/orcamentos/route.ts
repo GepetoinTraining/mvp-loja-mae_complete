@@ -1,7 +1,7 @@
 // API route for /api/orcamentos
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { auth } from "@/../auth"; // Adjusted path
+import { auth } from "@/lib/auth"; // Adjusted path
 import { z } from "zod";
 import { calculateOrcamentoTotal, applyBusinessRules } from "@/lib/businessRules";
 

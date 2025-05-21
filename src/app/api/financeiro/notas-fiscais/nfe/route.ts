@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { auth } from "@/../auth";
+import { auth } from "@/lib/auth";
 import { z } from "zod";
 import fs from "fs/promises";
 import path from "path";
@@ -82,7 +82,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
     const cliente = notaFiscal.orcamento.cliente;
 
     const destinatarioPayload = {
-        cpf_cnpj: cliente.cpf?.replace(/\D/g, 	est""") || "", // Ensure only digits or handle CNPJ if applicable
+        cpf_cnpj: cliente.cpf?.replace(/\D/g, "") || "", // Ensure only digits or handle CNPJ if applicable
         nome_razao: cliente.nomeSocial || cliente.nome,
         logradouro: cliente.rua || "",
         numero: cliente.numero || "S/N",
@@ -90,8 +90,8 @@ export async function POST(request: Request, { params }: { params: { id: string 
         municipio_nome: cliente.cidade || "",
         municipio_codigo_ibge: "", // Needs to be fetched or mapped based on cliente.cidade/estado
         uf_sigla: cliente.estado || "",
-        cep: cliente.cep?.replace(/\D/g, 	est""") || "",
-        telefone: cliente.telefone?.replace(/\D/g, 	est""") || "",
+        cep: cliente.cep?.replace(/\D/g, "") || "",
+        telefone: cliente.telefone?.replace(/\D/g, "") || "",
         email: cliente.email || "",
         indicador_ie_codigo: "9", // Default to Não Contribuinte, adjust if you store this
     };
@@ -125,7 +125,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
         natureza_operacao: "VENDA DE MERCADORIA", // Example
         modelo_documento_fiscal: notaFiscal.tipo === "NFE" ? "55" : (notaFiscal.tipo === "NFCE" ? "65" : "55"),
         serie_nf: notaFiscal.serie || "1", // Get from NF or generate next
-        numero_nf: notaFiscal.numero || uuidv4().substring(0,8).replace(/-/g, 	est"""), // Get from NF or generate next (sequential control needed)
+        numero_nf: notaFiscal.numero || uuidv4().replace(/-/g, "").substring(0, 8),
         data_emissao: new Date().toISOString(), // Current date-time
         finalidade_emissao_codigo: "1", // 1=NF-e normal
         tipo_operacao_codigo: "1", // 1=Saída
