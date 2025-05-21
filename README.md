@@ -32,13 +32,17 @@ cd mvp-loja-mae
 
 ## 3. Install Dependencies
 
-Install the project dependencies using npm:
+Install the project dependencies using your preferred package manager. The commands below show `npm`, but `pnpm` or `yarn` work as well:
 
 ```bash
 npm install
+# or
+pnpm install
+# or
+yarn install
 ```
 
-This command will download and install all the necessary packages defined in `package.json` and `package-lock.json`.
+This will download and install all the packages defined in `package.json`. `npm install` uses `package-lock.json`, while `pnpm install` relies on `pnpm-lock.yaml`.
 
 ## 4. Set Up Environment Variables
 
@@ -59,6 +63,7 @@ DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE_NAME?schema=public"
 # For NextAuth.js (generate a secret using: openssl rand -base64 32)
 # NEXTAUTH_SECRET="YOUR_NEXTAUTH_SECRET"
 # NEXTAUTH_URL="http://localhost:3000" # Or the port your app runs on
+# OPENAI_API_KEY="your-openai-api-key"
 ```
 
 **Important Notes on `DATABASE_URL`**:
@@ -136,5 +141,7 @@ Open your web browser and navigate to the address shown in the terminal.
 -   **Module Not Found Errors**: Double-check your `npm install` was successful and that all paths in your import statements are correct.
 -   **Database Connection Errors**: Verify your `DATABASE_URL` in the `.env` file is correct and that your PostgreSQL server is running and accessible.
 -   **Tailwind CSS / shadcn/ui Styling Issues**: Ensure Tailwind CSS is correctly configured and that you've run `npx shadcn-ui@latest init` and added the components as described.
+
+-   **"next: not found" Error**: This indicates dependencies are missing. Run `npm install` before `npm run dev`.
 
 That's it! You should now have the MVP Loja Mae application running locally.

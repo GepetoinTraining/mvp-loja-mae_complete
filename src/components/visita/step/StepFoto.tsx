@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+<<<<<<< HEAD
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
@@ -46,6 +47,26 @@ export function StepFoto({ onConfirm }: { onConfirm: (file: File) => void }) {
       >
         Enviar Foto
       </Button>
+=======
+
+export function StepFoto({ onNext }: { onNext: () => void }) {
+  const [foto, setFoto] = useState<File | null>(null);
+  return (
+    <div className="space-y-4">
+      <h2 className="text-lg font-semibold">Fotos do Local</h2>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => setFoto(e.target.files?.[0] || null)}
+      />
+      <button
+        className="bg-primary text-white px-4 py-2 rounded"
+        onClick={onNext}
+        disabled={!foto}
+      >
+        Próximo
+      </button>
+>>>>>>> 6e216db275680a6025a0e6521a60d3ed5209837d
     </div>
   );
 }

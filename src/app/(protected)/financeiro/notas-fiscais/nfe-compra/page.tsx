@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { NfeCompraImportadaList } from "@/components/financeiro/nfe-compra/NfeCompraImportadaList";
+=======
+import { NfeCompraImportadaList } from "@/components/nfe-compra/NfeCompraImportadaList";
+>>>>>>> 6e216db275680a6025a0e6521a60d3ed5209837d
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 

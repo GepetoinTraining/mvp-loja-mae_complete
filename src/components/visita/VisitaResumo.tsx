@@ -3,6 +3,7 @@
 import { useVisitaFormState } from "./useVisitaFormState";
 
 export function VisitaResumo() {
+<<<<<<< HEAD
   const { ambientes, fotosGerais } = useVisitaFormState();
 
   if (ambientes.length === 0) {
@@ -55,3 +56,24 @@ export function VisitaResumo() {
     </div>
   );
 }
+=======
+  const { ambientes } = useVisitaFormState();
+  return (
+    <div className="space-y-4">
+      <h2 className="text-lg font-semibold text-primary">Resumo da Visita</h2>
+      {ambientes.map((amb, i) => (
+        <div key={i} className="border rounded p-2">
+          <p className="font-medium">{amb.nome}</p>
+          {amb.produtos.length > 0 && (
+            <ul className="list-disc pl-4 text-sm">
+              {amb.produtos.map((p, idx) => (
+                <li key={idx}>{p.tipo}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+>>>>>>> 6e216db275680a6025a0e6521a60d3ed5209837d

@@ -22,6 +22,19 @@ export const businessRules = {
   calculateItemPrice,
 };
 /**
+ * Collection of configurable business rules used across the application.
+ */
+export const businessRules = {
+  nfe: {
+    /**
+     * Number of days after the emission date to use as a fallback due date
+     * when an imported NFe does not specify one.
+     */
+    fallbackDueDateDays: 30,
+  },
+} as const;
+
+/**
  * Validates a budget against defined business rules.
  * For now, focuses on discount rules.
  */
@@ -95,5 +108,58 @@ export function calculateItemPrice(itemData: any): number {
     return itemData.metragem * itemData.precoUnitario;
   }
   return 0;
+}
+
+/**
+ * Calculates final prices for all items of an orçamento and the overall total.
+ * Each item will have `precoFinal` ensured based on `calculateItemPrice`.
+ */
+export function calculateOrcamentoTotal(itens: ItemOrcamento[]) {
+  const itensComPrecoFinal = itens.map((item) => {
+    const precoFinal = calculateItemPrice(item);
+    return { ...item, precoFinal };
+  });
+
+  const valorTotalCalculado = itensComPrecoFinal.reduce(
+    (sum, item) => sum + (item.precoFinal || 0),
+    0
+  );
+
+  return { itensComPrecoFinal, valorTotalCalculado };
+}
+
+/**
+ * Applies high level business rules to an orçamento before persisting.
+ * Currently validates discount limits and adjusts status accordingly.
+ */
+export function applyBusinessRules(
+  orcamentoData: any,
+  userRole: Role
+) {
+  const subtotal = (orcamentoData.itens || []).reduce(
+    (sum: number, item: ItemOrcamento) => sum + (item.precoFinal || 0),
+    0
+  );
+  const desconto = orcamentoData.desconto || 0;
+  const discountPercentage = subtotal > 0 ? (desconto / subtotal) * 100 : 0;
+
+  // validate business rules based on current user role
+  const validation = validateOrcamentoBusinessRules(
+    orcamentoData as FullOrcamento,
+    discountPercentage,
+    { role: userRole } as User
+  );
+
+  if (validation.requiresAdminApproval) {
+    orcamentoData.status = "AGUARDANDO_APROVACAO";
+  }
+  if (!validation.isValid) {
+    throw new Error(validation.messages.join("; "));
+  }
+
+  // enforce calculated total considering any discount value
+  orcamentoData.valorTotal = subtotal - desconto;
+
+  return orcamentoData;
 }
 

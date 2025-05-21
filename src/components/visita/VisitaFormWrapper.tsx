@@ -1,11 +1,22 @@
 "use client";
 
+<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
 import { StepEndereco } from "@/components/visita/step/StepEndereco";
 import { StepAmbiente } from "@/components/visita/step/StepAmbiente";
 import { StepProduto } from "@/components/visita/step/StepProduto";
 import { StepCamposProduto } from "@/components/visita/step/StepCamposProduto";
 import { StepFoto } from "@/components/visita/step/StepFoto";
+=======
+import React from "react";
+import { useEffect, useState } from "react";
+import { StepEndereco } from "./step/StepEndereco";
+import { StepAmbiente } from "./step/StepAmbiente";
+import { useVisitaFormState } from "./useVisitaFormState";
+import { StepCamposProduto } from "./step/StepCamposProduto";
+import { StepProduto } from "./step/StepProduto";
+import { StepFoto } from "./step/StepFoto";
+>>>>>>> 6e216db275680a6025a0e6521a60d3ed5209837d
 import { VisitaResumo } from "./VisitaResumo";
 import { useVisitaFormState } from "./useVisitaFormState";
 

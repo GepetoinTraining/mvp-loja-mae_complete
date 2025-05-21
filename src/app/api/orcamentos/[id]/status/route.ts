@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { z } from "zod";
 import bcrypt from "bcryptjs"; // For password hashing
+import { sendEmail } from "@/lib/email";
 
 // Define the OrcamentoStatus enum values from your schema.prisma
 enum OrcamentoStatus {
@@ -130,9 +131,17 @@ export async function PATCH(
                 },
               },
             });
-            console.log(`Novo usuário criado para cliente ${cliente.id} com ID: ${newUser.id}. Senha (antes do hash): ${rawPassword}`);
-            // TODO: Implement email sending with credentials (rawPassword) here if required
-            // For security, do not log rawPassword in production
+            console.log(`Novo usuário criado para cliente ${cliente.id} com ID: ${newUser.id}.`);
+
+            try {
+              await sendEmail(
+                newUser.email,
+                "Acesso ao Portal do Cliente",
+                `<p>Olá ${newUser.name},</p><p>Seu acesso ao portal foi criado.</p><p><strong>Usuário:</strong> ${newUser.email}</p><p><strong>Senha:</strong> ${rawPassword}</p>`
+              );
+            } catch (emailError) {
+              console.error(`Falha ao enviar e-mail para ${newUser.email}:`, emailError);
+            }
 
           } catch (userCreationError: any) {
             console.error(`Erro ao criar usuário para cliente ${cliente.id}:`, userCreationError);
