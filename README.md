@@ -145,3 +145,7 @@ Open your web browser and navigate to the address shown in the terminal.
 -   **"next: not found" Error**: This indicates dependencies are missing. Run `npm install` before `npm run dev`.
 
 That's it! You should now have the MVP Loja Mae application running locally.
+
+## Deprecated packages
+See [DEPRECATED_PACKAGES.md](DEPRECATED_PACKAGES.md) for a list of known deprecated dependencies extracted from the lock files.
+
