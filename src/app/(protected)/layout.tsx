@@ -1,6 +1,6 @@
 // app/(protected)/layout.tsx
 import { ReactNode } from "react";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "@/app/globals.css";
 
 // 1) importe seu layout de componentes
@@ -10,13 +10,9 @@ import type { AuthPayload } from "@/lib/types";
 import { getUserFromToken } from "@/lib/auth";
 import { UserProvider } from "@/store/UserProvider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
-});
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: "--font-inter",
 });
 
 export default async function RootLayout({
