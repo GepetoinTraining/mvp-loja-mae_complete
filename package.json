@@ -68,12 +68,8 @@
     "next-themes": "^0.4.6",
     "node-forge": "^1.3.1",
     "nodemailer": "^6.9.1",
-<<<<<<< HEAD
     "papaparse": "^5.5.2",
     "qrcode.react": "^4.2.0",
-=======
-    "openai": "^4.21.1",
->>>>>>> 6e216db275680a6025a0e6521a60d3ed5209837d
     "react": "^18",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
